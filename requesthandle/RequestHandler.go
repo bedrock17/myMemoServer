@@ -20,9 +20,8 @@ func Run(port int) {
 	mainRouter.HandleFunc("GET", "/", index)
 	mainRouter.HandleFunc("GET", "/memo/:data", data.Get)
 	mainRouter.HandleFunc("POST", "/memo/:data", data.Post)
-	// mainRouter.HandleFunc("GET", "/apitest", apiTest)
-	// mainRouter.HandleFunc("GET", "/user/insert", userInsertAPI)
-	// mainRouter.HandleFunc("GET", "/test", testHandle)
+	mainRouter.HandleFunc("PUT", "/memo/:data", data.Update)
+
 	portst := "localhost:" + strconv.Itoa(int(port))
 
 	// http.Handle("/public/", new(staticHandler))
