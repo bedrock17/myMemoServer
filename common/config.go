@@ -2,7 +2,6 @@ package common
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"os"
 )
@@ -51,7 +50,7 @@ func (conf *Config) Load() {
 
 	Check(err)
 
-	fmt.Println("config : ", conf)
+	// fmt.Println("config : ", conf)
 
 	conf.Save()
 

@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"path/filepath"
+	"strings"
 
 	// "net/http"
 	// "strconv"
@@ -14,10 +16,39 @@ import (
 	"github.com/bedrock17/router"
 )
 
+//MemoInit : memo경로 설정
+func MemoInit() {
+	common.GlobalConfig.Load()
+}
+
+//GetList : 저장된 글 목록
+func GetList(c *router.Context) {
+	var memos memoList
+	dirName := common.GlobalConfig.DataPath
+
+	err := filepath.Walk(dirName, func(path string, info os.FileInfo, err error) error {
+		path = strings.Replace(path, dirName+"\\", "", 1)
+
+		memos.Memos = append(memos.Memos, path)
+		return nil
+	})
+	common.Check(err)
+
+	fmt.Println(memos, dirName, common.GlobalConfig)
+
+	data, err := json.Marshal(memos)
+
+	common.Check(err)
+
+	fmt.Fprintf(c.ResponseWriter, "%s", data)
+
+}
+
 //Get : 읽기
 func Get(c *router.Context) {
-
-	filePath := fmt.Sprintf("test/%s.json", c.Param["data"])
+	fmt.Println(common.GlobalConfig)
+	dirName := common.GlobalConfig.DataPath
+	filePath := fmt.Sprintf("%s/%s.json", dirName, c.Param["data"])
 
 	if common.FileExists(filePath) {
 		data, err := ioutil.ReadFile(filePath)
@@ -43,7 +74,7 @@ func Post(c *router.Context) {
 	b, err := json.Marshal(data)
 	common.Check(err)
 
-	dirName := "test"
+	dirName := common.GlobalConfig.DataPath
 	err = os.Mkdir(dirName, 0644)
 
 	filePath := fmt.Sprintf("%s/%s.json", dirName, c.Param["data"])
@@ -70,7 +101,7 @@ func Update(c *router.Context) {
 	b, err := json.Marshal(data)
 	common.Check(err)
 
-	dirName := "test"
+	dirName := common.GlobalConfig.DataPath
 	err = os.Mkdir(dirName, 0644)
 
 	filePath := fmt.Sprintf("%s/%s.json", dirName, c.Param["data"])

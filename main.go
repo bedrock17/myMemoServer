@@ -3,8 +3,7 @@ package main
 import (
 	"fmt"
 
-	"./common"
-
+	"github.com/bedrock17/myMemoServer/common"
 	"github.com/bedrock17/myMemoServer/requesthandle"
 )
 
@@ -14,4 +13,5 @@ func main() {
 	common.GlobalConfig.Load()
 
 	requesthandle.Run(common.GlobalConfig.ServicePort)
+
 }

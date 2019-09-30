@@ -17,7 +17,10 @@ func index(c *router.Context) {
 func Run(port int) {
 
 	mainRouter := &router.Router{Handlers: make(map[string]map[string]router.HandlerFunc), DevMode: true}
+
+	data.MemoInit()
 	mainRouter.HandleFunc("GET", "/", index)
+	mainRouter.HandleFunc("GET", "/memo", data.GetList)
 	mainRouter.HandleFunc("GET", "/memo/:data", data.Get)
 	mainRouter.HandleFunc("POST", "/memo/:data", data.Post)
 	mainRouter.HandleFunc("PUT", "/memo/:data", data.Update)
