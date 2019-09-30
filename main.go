@@ -3,11 +3,15 @@ package main
 import (
 	"fmt"
 
+	"./common"
+
 	"github.com/bedrock17/myMemoServer/requesthandle"
 )
 
 func main() {
 	fmt.Println("my server start")
 
-	requesthandle.Run(8888)
+	common.GlobalConfig.Load()
+
+	requesthandle.Run(common.GlobalConfig.ServicePort)
 }

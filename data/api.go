@@ -14,20 +14,14 @@ import (
 	"github.com/bedrock17/router"
 )
 
-func check(e error) {
-	if e != nil {
-		panic(e)
-	}
-}
-
-//Get : get data
+//Get : 읽기
 func Get(c *router.Context) {
 
 	filePath := fmt.Sprintf("test/%s.json", c.Param["data"])
 
 	if common.FileExists(filePath) {
 		data, err := ioutil.ReadFile(filePath)
-		check(err)
+		common.Check(err)
 
 		fmt.Fprintf(c.ResponseWriter, "%s", data)
 	} else {
@@ -36,7 +30,7 @@ func Get(c *router.Context) {
 
 }
 
-//Post : porc post data
+//Post : 생성
 func Post(c *router.Context) {
 
 	body := make([]byte, c.Request.ContentLength)
@@ -44,10 +38,10 @@ func Post(c *router.Context) {
 
 	var data memo
 	err := json.Unmarshal(body, &data)
-	check(err)
+	common.Check(err)
 
 	b, err := json.Marshal(data)
-	check(err)
+	common.Check(err)
 
 	dirName := "test"
 	err = os.Mkdir(dirName, 0644)
@@ -58,7 +52,7 @@ func Post(c *router.Context) {
 		fmt.Fprintf(c.ResponseWriter, "%s %s", c.Param["data"], "is exist")
 	} else {
 		err = ioutil.WriteFile(filePath, b, 0644)
-		check(err)
+		common.Check(err)
 		fmt.Fprint(c.ResponseWriter, string(b))
 	}
 
@@ -71,10 +65,10 @@ func Update(c *router.Context) {
 
 	var data memo
 	err := json.Unmarshal(body, &data)
-	check(err)
+	common.Check(err)
 
 	b, err := json.Marshal(data)
-	check(err)
+	common.Check(err)
 
 	dirName := "test"
 	err = os.Mkdir(dirName, 0644)
@@ -83,7 +77,7 @@ func Update(c *router.Context) {
 
 	if common.FileExists(filePath) {
 		err = ioutil.WriteFile(filePath, b, 0644)
-		check(err)
+		common.Check(err)
 		fmt.Fprint(c.ResponseWriter, string(b))
 	} else {
 		fmt.Fprintf(c.ResponseWriter, "%s %s", c.Param["data"], "is not exist")
