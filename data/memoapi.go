@@ -27,14 +27,17 @@ func GetList(c *router.Context) {
 	dirName := common.GlobalConfig.DataPath
 
 	err := filepath.Walk(dirName, func(path string, info os.FileInfo, err error) error {
-		path = strings.Replace(path, dirName+"\\", "", 1)
+		if path != dirName {
 
-		memos.Memos = append(memos.Memos, path)
+			old := path[:len(dirName)+1]
+			path = strings.Replace(path, old, "", 1)
+			path = path[:len(path)-len(".json")]
+
+			memos.Memos = append(memos.Memos, path)
+		}
 		return nil
 	})
 	common.Check(err)
-
-	fmt.Println(memos, dirName, common.GlobalConfig)
 
 	data, err := json.Marshal(memos)
 
