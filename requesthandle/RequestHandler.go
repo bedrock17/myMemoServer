@@ -24,6 +24,7 @@ func Run(port int) {
 	mainRouter.HandleFunc("GET", "/memo/:data", data.Get)
 	mainRouter.HandleFunc("POST", "/memo/:data", data.Post)
 	mainRouter.HandleFunc("PUT", "/memo/:data", data.Update)
+	mainRouter.HandleFunc("OPTIONS", "/memo/:data", data.Options)
 
 	portst := "localhost:" + strconv.Itoa(int(port))
 
