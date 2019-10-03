@@ -105,14 +105,28 @@ func Update(c *router.Context) {
 	common.Check(err)
 
 	dirName := common.GlobalConfig.DataPath
-	err = os.Mkdir(dirName, 0644)
-
 	filePath := fmt.Sprintf("%s/%s.json", dirName, c.Param["data"])
 
 	if common.FileExists(filePath) {
 		err = ioutil.WriteFile(filePath, b, 0644)
 		common.Check(err)
 		fmt.Fprint(c.ResponseWriter, string(b))
+	} else {
+		fmt.Fprintf(c.ResponseWriter, "%s %s", c.Param["data"], "is not exist")
+	}
+}
+
+//Delete : 작성된 내용 삭제
+func Delete(c *router.Context) {
+	body := make([]byte, c.Request.ContentLength)
+	c.Request.Body.Read(body)
+
+	dirName := common.GlobalConfig.DataPath
+	filePath := fmt.Sprintf("%s/%s.json", dirName, c.Param["data"])
+
+	if common.FileExists(filePath) {
+		os.Remove(filePath)
+		fmt.Fprint(c.ResponseWriter, c.Param["data"], " is deleted")
 	} else {
 		fmt.Fprintf(c.ResponseWriter, "%s %s", c.Param["data"], "is not exist")
 	}
