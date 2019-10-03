@@ -135,5 +135,6 @@ func Delete(c *router.Context) {
 //Options : 이 url이 어떤 method가 가능한지 응답
 func Options(c *router.Context) {
 	c.ResponseWriter.Header().Set("Access-Control-Allow-Headers", "*")
-	c.ResponseWriter.Header().Set("Allow", "OPTIONS, GET, POST, PUT")
+	c.ResponseWriter.Header().Set("Allow", "OPTIONS, DELETE, GET, POST, PUT")
+	c.ResponseWriter.Header().Set("Access-Control-Allow-Methods", "OPTIONS, DELETE, GET, POST, PUT")
 }
