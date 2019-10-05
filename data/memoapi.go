@@ -49,7 +49,6 @@ func GetList(c *router.Context) {
 
 //Get : 읽기
 func Get(c *router.Context) {
-	fmt.Println(common.GlobalConfig)
 	dirName := common.GlobalConfig.DataPath
 	filePath := fmt.Sprintf("%s/%s.json", dirName, c.Param["data"])
 
@@ -80,14 +79,15 @@ func Post(c *router.Context) {
 	dirName := common.GlobalConfig.DataPath
 	err = os.Mkdir(dirName, 0644)
 
-	filePath := fmt.Sprintf("%s/%s.json", dirName, c.Param["data"])
+	fileName := fmt.Sprintf("%s", c.Param["data"])
+	if len(fileName) > 0 {
 
-	if common.FileExists(filePath) {
-		fmt.Fprintf(c.ResponseWriter, "%s %s", c.Param["data"], "is exist")
-	} else {
+		filePath := fmt.Sprintf("%s/%s.json", dirName, fileName)
+
 		err = ioutil.WriteFile(filePath, b, 0644)
 		common.Check(err)
 		fmt.Fprint(c.ResponseWriter, string(b))
+
 	}
 
 }
@@ -132,7 +132,7 @@ func Delete(c *router.Context) {
 	}
 }
 
-//Options : 이 url이 어떤 method가 가능한지 응답
+//Options : uri에 어떤 method가 가능한지 응답
 func Options(c *router.Context) {
 	c.ResponseWriter.Header().Set("Access-Control-Allow-Headers", "*")
 	c.ResponseWriter.Header().Set("Allow", "OPTIONS, DELETE, GET, POST, PUT")
