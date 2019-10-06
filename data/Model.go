@@ -1,8 +1,12 @@
 package data
 
+import "time"
+
 type memo struct {
-	Title   string `json:"title"`
-	Content string `json:"content"`
+	path       string
+	Title      string    `json:"title"`
+	Content    string    `json:"content"`
+	CratedTime time.Time `json:"createdtime"`
 }
 
 type memoList struct {
