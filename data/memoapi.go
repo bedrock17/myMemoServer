@@ -92,7 +92,7 @@ func GetList(c *router.Context) {
 //Get : 읽기
 func Get(c *router.Context) {
 	dirName := common.GlobalConfig.DataPath
-	filePath := fmt.Sprintf("%s/%s.json", dirName, c.Param["data"])
+	filePath := fmt.Sprintf("%s/%s.json", dirName, c.Params["data"])
 
 	if common.FileExists(filePath) {
 		data, err := ioutil.ReadFile(filePath)
@@ -100,7 +100,7 @@ func Get(c *router.Context) {
 
 		fmt.Fprintf(c.ResponseWriter, "%s", data)
 	} else {
-		fmt.Fprintf(c.ResponseWriter, "%s %s", c.Param["data"], "is not exist")
+		fmt.Fprintf(c.ResponseWriter, "%s %s", c.Params["data"], "is not exist")
 	}
 
 }
@@ -123,7 +123,7 @@ func Post(c *router.Context) {
 	dirName := common.GlobalConfig.DataPath
 	err = os.Mkdir(dirName, 0644)
 
-	title := fmt.Sprintf("%s", c.Param["data"])
+	title := fmt.Sprintf("%s", c.Params["data"])
 	if len(title) <= 64 {
 		fileName := title
 		if len(fileName) > 0 {
@@ -149,7 +149,7 @@ func Update(c *router.Context) {
 	common.Check(err)
 
 	dirName := common.GlobalConfig.DataPath
-	filePath := fmt.Sprintf("%s/%s.json", dirName, c.Param["data"])
+	filePath := fmt.Sprintf("%s/%s.json", dirName, c.Params["data"])
 
 	if common.FileExists(filePath) {
 
@@ -162,7 +162,7 @@ func Update(c *router.Context) {
 		common.Check(err)
 		fmt.Fprint(c.ResponseWriter, string(b))
 	} else {
-		fmt.Fprintf(c.ResponseWriter, "%s %s", c.Param["data"], "is not exist")
+		fmt.Fprintf(c.ResponseWriter, "%s %s", c.Params["data"], "is not exist")
 	}
 }
 
@@ -172,13 +172,13 @@ func Delete(c *router.Context) {
 	c.Request.Body.Read(body)
 
 	dirName := common.GlobalConfig.DataPath
-	filePath := fmt.Sprintf("%s/%s.json", dirName, c.Param["data"])
+	filePath := fmt.Sprintf("%s/%s.json", dirName, c.Params["data"])
 
 	if common.FileExists(filePath) {
 		os.Remove(filePath)
-		fmt.Fprint(c.ResponseWriter, c.Param["data"], " is deleted")
+		fmt.Fprint(c.ResponseWriter, c.Params["data"], " is deleted")
 	} else {
-		fmt.Fprintf(c.ResponseWriter, "%s %s", c.Param["data"], "is not exist")
+		fmt.Fprintf(c.ResponseWriter, "%s %s", c.Params["data"], "is not exist")
 	}
 }
 

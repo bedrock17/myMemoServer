@@ -13,29 +13,32 @@ func index(c *router.Context) {
 	fmt.Fprintf(c.ResponseWriter, "Welcome!")
 }
 
+func staticHandle(c *router.Context) {
+	http.NotFound(c.ResponseWriter, c.Request) //정적파일을 찾지 못한경우
+}
+
 //Run : 핸들러를 등록하고 http 서버를 시작한다.
 func Run(port int) {
 
-	mainRouter := &router.Router{Handlers: make(map[string]map[string]router.HandlerFunc), DevMode: true}
+	data.MemoInit() //load config
 
-	data.MemoInit()
-	mainRouter.HandleFunc("GET", "/", index)
+	server := router.NewServer()
+	server.DevMode = true
+	server.AppendMiidleWare(router.LogHandler)
+	server.AppendMiidleWare(router.RecoverHandler)
+	server.AppendMiidleWare(router.StaticHandler)
 
-	mainRouter.HandleFunc("GET", "/memo", data.GetList)
+	server.HandleFunc("GET", "/", index)
+	server.HandleFunc("GET", "/memo", data.GetList)
+	server.HandleFunc("OPTIONS", "/memo/:data", data.Options)
+	server.HandleFunc("GET", "/memo/:data", data.Get)
+	server.HandleFunc("POST", "/memo/:data", data.Post)
+	server.HandleFunc("PUT", "/memo/:data", data.Update)
+	server.HandleFunc("DELETE", "/memo/:data", data.Delete)
 
-	mainRouter.HandleFunc("OPTIONS", "/memo/:data", data.Options)
-	mainRouter.HandleFunc("GET", "/memo/:data", data.Get)
-	mainRouter.HandleFunc("POST", "/memo/:data", data.Post)
-	mainRouter.HandleFunc("PUT", "/memo/:data", data.Update)
-	mainRouter.HandleFunc("DELETE", "/memo/:data", data.Delete)
+	server.HandleFunc("GET", "/static/*", staticHandle)
 
-	portst := "localhost:" + strconv.Itoa(int(port))
-
-	// http.Handle("/public/", new(staticHandler))
-	err := http.ListenAndServe(portst, mainRouter)
-
-	if err != nil {
-		fmt.Println("RUN ERROR ", err)
-	}
+	addr := "localhost:" + strconv.Itoa(int(port))
+	server.Run(addr)
 
 }
