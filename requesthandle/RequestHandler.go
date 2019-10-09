@@ -17,16 +17,25 @@ func staticHandle(c *router.Context) {
 	http.NotFound(c.ResponseWriter, c.Request) //정적파일을 찾지 못한경우
 }
 
+func accessControlHeader(next router.HandlerFunc) router.HandlerFunc {
+	return func(c *router.Context) {
+		c.ResponseWriter.Header().Set("Access-Control-Allow-Origin", "*")
+		next(c)
+	}
+}
+
+// func
+
 //Run : 핸들러를 등록하고 http 서버를 시작한다.
 func Run(port int) {
 
 	data.MemoInit() //load config
 
 	server := router.NewServer()
-	server.DevMode = true
 	server.AppendMiidleWare(router.LogHandler)
 	server.AppendMiidleWare(router.RecoverHandler)
 	server.AppendMiidleWare(router.StaticHandler)
+	server.AppendMiidleWare(accessControlHeader)
 
 	server.HandleFunc("GET", "/", index)
 	server.HandleFunc("GET", "/memo", data.GetList)
