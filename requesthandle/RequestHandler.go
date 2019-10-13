@@ -1,7 +1,6 @@
 package requesthandle
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -10,7 +9,8 @@ import (
 )
 
 func index(c *router.Context) {
-	fmt.Fprintf(c.ResponseWriter, "Welcome!")
+	// fmt.Fprintf(c.ResponseWriter, "Welcome!")
+	http.Redirect(c.ResponseWriter, c.Request, "/static/index.html", http.StatusFound)
 }
 
 func staticHandle(c *router.Context) {
